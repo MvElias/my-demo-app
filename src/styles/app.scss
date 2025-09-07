@@ -1,0 +1,255 @@
+/* ---------- Variables base ---------- */
+:root {
+  --avatar: 160px;
+
+  /* Halo (pausa) */
+  --halo-size: 40vmin;
+  --halo-intensity: 0.04;
+
+  /* Aro/Glow del avatar */
+  --ring: 5px;
+  --glow: 10px;
+  --ring-speed: 6s;
+
+  /* Fondo giratorio */
+  --bg-size: 240vmax;
+  --bg-rotate-dur: 64s;
+}
+
+/* ---------- Contenedor principal ---------- */
+/* Pausa: fondo negro + halo.
+   Play: núcleo blanco pequeño + rayos cálidos girando. */
+.main {
+  height: 100svh;
+  position: relative;
+  overflow: hidden;
+  margin: 0;
+
+  display: grid;
+  place-items: center;
+
+  background: #000;
+  color: #4d0d0d;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif;
+
+  /* HALO (pausa) */
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background:
+      radial-gradient(
+        circle at 50% 50%,
+        rgba(255, 255, 255, var(--halo-intensity)) 0%,
+        rgba(255, 255, 255, calc(var(--halo-intensity) * 0.7)) 22%,
+        rgba(255, 255, 255, 0) var(--halo-size)
+      );
+    opacity: 1;
+    transition: opacity 420ms ease, background 220ms ease;
+  }
+
+  /* Fondo giratorio (oculto en pausa) */
+  &::after {
+    content: "";
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    width: var(--bg-size);
+    height: var(--bg-size);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+
+    background:
+      /* Núcleo blanco suave */
+      radial-gradient(
+        circle at 50% 50%,
+        #ffffff 0 5vmin,
+        rgba(255, 255, 255, 0.85) 5vmin 7.2vmin,
+        rgba(255, 245, 210, 0.45) 10vmin 12vmin,
+        rgba(255, 220, 110, 0.15) 20vmin 30vmin
+      ),
+      /* Rayos */
+      repeating-conic-gradient(
+        from -8deg,
+        rgba(255, 255, 255, 0.18) 0deg 2.8deg,
+        rgba(255, 255, 255, 0)    2.8deg 10deg
+      ),
+      /* Tinte cálido */
+      conic-gradient(
+        from -10deg,
+        #FFD24D 90deg,
+        #FFBF1F 135deg,
+        #FFAE1A 180deg,
+        #FFBF1F 225deg,
+        #FFD24D 270deg
+      );
+
+    mix-blend-mode: screen;
+    filter: saturate(125%) brightness(1.05);
+
+    transform: translate(-50%, -50%) rotate(0deg);
+    transform-origin: 50% 50%;
+    animation: bg-spin var(--bg-rotate-dur) linear infinite;
+
+    opacity: 0;
+    transition: opacity 420ms ease;
+  }
+}
+
+/* Reproduciendo: fade-out del halo, fade-in del fondo giratorio */
+.main.playing {
+  &::before { opacity: 0; }
+  &::after  { opacity: 1; }
+}
+
+/* Mantiene el fondo centrado durante la rotación */
+@keyframes bg-spin {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to   { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .main::after { animation: none; }
+  .main.playing::after { opacity: 1; }
+}
+
+/* ---------- Avatar + anillo RGB ---------- */
+.avatarWrap {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: var(--avatar);
+  height: var(--avatar);
+  border-radius: 50%;
+  overflow: visible;           /* deja salir el glow */
+  z-index: 1;
+  box-shadow: 0 0 0 2px #000;  /* borde base negro */
+}
+
+.avatarClip {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  overflow: hidden;            /* recorta el video/imagen */
+}
+
+.avatarImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Glow suave (debajo) */
+.avatarWrap::before,
+.avatarWrap::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0;                  /* oculto por defecto */
+  transition: opacity 400ms ease;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Glow blur */
+.avatarWrap::before {
+  inset: calc(var(--ring) * -1.6);
+  background:
+    conic-gradient(
+      from 0deg,
+      #FFF7D1 0deg,
+      #FFE88F 30deg,
+      #FFC93C 80deg,
+      #FFAE1A 130deg,
+      #FF8A00 180deg,
+      #FF6A3D 220deg,
+      #FF8A00 260deg,
+      #FFAE1A 300deg,
+      #FFC93C 330deg,
+      #FFE88F 350deg,
+      #FFF7D1 360deg
+    );
+  filter: blur(var(--glow)) saturate(140%) brightness(1.1);
+  animation: spin var(--ring-speed) linear infinite reverse;
+}
+
+/* Anillo nítido tipo donut */
+.avatarWrap::after {
+  inset: calc(var(--ring) * -0.6);
+  background:
+    conic-gradient(
+      from 0deg,
+      #FFF1A6 0deg,
+      #FFE066 36deg,
+      #FFC233 90deg,
+      #FFA500 144deg,
+      #FF8C1A 198deg,
+      #FF7A00 252deg,
+      #FF8C1A 306deg,
+      #FFA500 324deg,
+      #FFC233 342deg,
+      #FFE066 354deg,
+      #FFF1A6 360deg
+    );
+  -webkit-mask: radial-gradient(farthest-side,
+    transparent calc(100% - var(--ring)),
+    #000       calc(100% - var(--ring) + 1px));
+  mask: radial-gradient(farthest-side,
+    transparent calc(100% - var(--ring)),
+    #000       calc(100% - var(--ring) + 1px));
+  animation: spin var(--ring-speed) linear infinite;
+}
+
+/* Mostrar anillo/glow cuando está sonando */
+.playing .avatarWrap::before,
+.playing .avatarWrap::after { opacity: 1; }
+
+/* Giro continuo del anillo */
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ---------- Confeti (vía JS) ---------- */
+.confettiLayer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.confetti {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: 8px;
+  height: 12px;
+  transform: translate(-50%, -50%);
+  background: hsl(var(--h) 100% 50%);
+  border-radius: 2px;
+  opacity: 0.95;
+  animation: confetti-fall 900ms ease-out forwards;
+}
+
+@keyframes confetti-fall {
+  0% {
+    transform: translate(-50%, -50%) translate(0, 0) rotate(0deg) scale(var(--r));
+  }
+  100% {
+    transform:
+      translate(-50%, -50%)
+      translate(var(--dx), calc(var(--dy) + 520px))
+      rotate(720deg)
+      scale(var(--r));
+    opacity: 0;
+  }
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 480px) {
+  .main { --avatar: 128px; }
+}
