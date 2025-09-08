@@ -1,12 +1,12 @@
 # Mini app de testing 
 
-Esta es una tonta y pequeña **aplicación de demostración** que desarrollé para experimentar con **pipelines CI/CD** y **flujos GitOps** desplegándola en múltiples plataformas: **Docker**, **Docker Compose**, **máquinas virtuales**, y **Kubernetes** (AKS, GKE, EKS, etc.).  
+Necesitaba experimentar con **pipelines CI/CD** y **flujos GitOps** desplegando en múltiples plataformas: **Docker**, **Docker Compose**, **máquinas virtuales**, y **Kubernetes** (AKS, GKE, EKS, etc.) por lo que desarrolé está **aplicación de demostración**. 
 
 
 ## ¿Para qué uso esta app?
 - Probar CICD (por ej; **build → deploy → smoke test**) en distintos entornos.
 - Experimentar con **GitOps** 
-- validar algunos modos de exposición de una aplicación
+- validar otras cosas tras desplegar, como por ejemplo:
   + **Web server / Reverse proxy** (p. ej., Nginx/Apache)
   + **Kubernetes Ingress**
   + **NodePort / LoadBalancer**
@@ -18,5 +18,5 @@ Esta es una tonta y pequeña **aplicación de demostración** que desarrollé pa
 - **Kubernetes**: vanilla, **AKS**, **GKE**, **EKS**
 
 ## Ejecutar con Docker:
-- `docker build -t holi .`
-- `docker run --rm -d -p 8080:80 holi`
+- `docker build -t seal .`
+- `docker run --rm -d -p 8080:80 seal`
