@@ -1,6 +1,6 @@
 # Mini app de testing 
 
-Necesitaba experimentar con **pipelines CI/CD** y **flujos GitOps** desplegando en múltiples plataformas: **Docker**, **Docker Compose**, **máquinas virtuales**, y **Kubernetes** (AKS, GKE, EKS, etc.) por lo que desarrolé está **aplicación de demostración**. 
+Necesitaba experimentar con **pipelines CI/CD** y **flujos GitOps** desplegando en múltiples plataformas: **Docker**, **Docker Compose**, **máquinas virtuales**, y **Kubernetes** (AKS, GKE, EKS, etc.) por lo que desarrollé está **aplicación de demostración**. 
 
 
 ## ¿Para qué uso esta app?
